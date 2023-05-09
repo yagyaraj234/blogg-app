@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"nodemon  src/server.js\" \"npm run frontend\"",
+    "backend":"src/server.js",
+    "dev": "concurrently \"nodemon  ./src/server.js\" \"npm run frontend\"",
     "frontend": "npm start --prefix ../bblog-app"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "concurrently": "^8.0.1",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongodb": "^5.4.0"
   }

@@ -2,6 +2,10 @@ const articles = [
     {
         name: 'learn-react',
         title: 'The Fastest Way to Learn React',
+        user:'alex',
+        comments:[],
+        likes:32,
+        follow:true,
         content: [
             `Welcome! Today we're going to be talking about the fastest way to
             learn React. We'll be discussing some topics such as proin congue
@@ -26,6 +30,13 @@ const articles = [
     },    {
         name: 'learn-node',
         title: 'How to Build a Node Server in 10 Minutes',
+        user:'james',
+        likes:4,
+        comments:[
+            'hello world',
+            'james wood',
+            'follow me'
+        ],
         content: [
             `In this article, we're going to be talking looking at a very quick way
             to set up a Node.js server. We'll be discussing some topics such as proin congue
@@ -50,6 +61,8 @@ const articles = [
     },     {
         name: 'mongodb',
         title: 'Learn MongoDB',
+        comments:[],
+        likes:90,
         content: [
             `Today is the day I talk about something which scares most people: resumes.
             In reality, I'm not sure why people have such a hard time with proin congue
@@ -75,6 +88,10 @@ const articles = [
     {
         name: 'spring-boot',
         title: 'How to Build a Node Server in 10 Minutes',
+        user:'lara dutta',
+        follow:false,
+        likes:2,
+        comments:[],
         content:[
             `Hello World`
         ]

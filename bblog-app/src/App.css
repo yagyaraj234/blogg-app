@@ -9,3 +9,12 @@
   position: static;
   top: 100%;
 }
+
+/* ----------------- Icons --------------- */
+.heroicons{
+  padding: 1rem 0;
+  width: 30px;
+}
+.profile{
+  padding:1rem 0;
+}
