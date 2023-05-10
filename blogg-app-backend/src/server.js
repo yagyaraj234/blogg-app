@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
+import { db, connectToDb } from "./db.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 5500;
@@ -11,10 +11,6 @@ app.use(express.json());
 // Loading Articles
 app.get("/api/articles/:name", async (req, res) => {
   const { name } = req.params;
-  const client = new MongoClient("mongodb://127.0.0.1:27017");
-  await client.connect();
-
-  const db = client.db("react-blog-db");
   const article = await db.collection("articles").findOne({ name });
 
   if (article) {
@@ -28,10 +24,7 @@ app.get("/api/articles/:name", async (req, res) => {
 
 app.put("/api/articles/:name/likes", async (req, res) => {
   const { name } = req.params;
-  const client = new MongoClient("mongodb://127.0.0.1:27017");
-  await client.connect();
 
-  const db = client.db("react-blog-db");
   await db.collection("articles").updateOne(
     { name },
     {
@@ -48,10 +41,38 @@ app.put("/api/articles/:name/likes", async (req, res) => {
     res.send("That article doesn't exist");
   }
 });
+
+// Comments
+
+app.post("/api/articles/:name/comments", async (req, res) => {
+  const { name } = req.params;
+
+  const { postedBy, text } = req.body;
+
+  await db.collection("articles").updateOne(
+    { name },
+    {
+      $push: { comments: { postedBy, text } },
+    }
+  );
+
+  const article = await db.collection("articles").findOne({ name });
+
+  if (article) {
+    res.send(article.comments);
+  } else {
+    res.send("That article doesn't exist");
+  }
+});
+
 // Home Page
 app.get("/", (req, res) => {
   res.send("Hello");
 });
-app.listen(PORT, () => {
-  console.log(`server is listening to ${PORT}`);
+
+connectToDb(() => {
+  console.log('Db connected Succesfully')
+  app.listen(PORT, () => {
+    console.log(`server is listening to ${PORT}`);
+  });
 });
