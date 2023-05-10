@@ -4,20 +4,25 @@ import articles from './article-content';
 import NotFound from './NotFound';
 import { HeartIcon, ChatBubbleOvalLeftIcon, ShareIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-
 import { useState, useEffect } from 'react';
+import axios from 'axios'
 
 
 const Article = () => {
-  const [articleInfo,setArticleInfo]=useState({upvotes:0,comments:[]})
-
-  useEffect(()=>{
-    setArticleInfo({upvotes:3,comments:[]});
-  },[])
-
-
-
   const { articleId } = useParams();
+  const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [] })
+
+  useEffect(() => {
+    const loadArticleInfo = async () => {
+      const response = await axios.get(`/api/articles/${articleId}`)
+      const newArticleInfo=response.data;
+      setArticleInfo(newArticleInfo);
+    }
+    loadArticleInfo();
+  }, [])
+
+
+
   const article = articles.find(article => article.name === articleId);
   if (!article) {
     return <NotFound />
@@ -40,10 +45,10 @@ const Article = () => {
         </div>
       </div>
       <div className="flex flex-row">
-        <Link to='/likes'><p className='mr-1'>{article.likes} likes</p></Link>
+        <Link to='/likes'><p className='mr-1'>{articleInfo.likes} like(s)</p></Link>
 
         <p className='mr-1'></p>
-        <Link to='/comments'><p className='mr-1'>{article.comments.length} comments</p></Link>
+        <Link to='/comments'><p className='mr-1'>{articleInfo.comments.length} comment(s)</p></Link>
       </div>
 
 
