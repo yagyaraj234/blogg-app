@@ -8,6 +8,9 @@ import CommentsList from '../components/CommentsList';
 import axios from 'axios'
 import AddComment from '../components/AddComment';
 
+import useUser from '../hooks/useUser';
+import {Link} from 'react-router-dom'
+
 
 
 
@@ -16,6 +19,8 @@ const Article = () => {
   const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [] })
 
   const [isShown, setIsShown] = useState(false);
+
+  const {user,isLoading}=useUser();
 
   const handleClick = event => {
     // 👇️ toggle shown state
@@ -60,9 +65,16 @@ const Article = () => {
       {/* // interaction icons */}
       <div className='flex flex-row justify-between   '>
         < div className='flex ' >
-          <HeartIcon className='heroicons mr-4 cursor-pointer hover:fill-red-700' onClick={addLike} />
+          {user
+          ?
+          <div className='flex'><HeartIcon className='heroicons mr-4 cursor-pointer hover:fill-red-700' onClick={addLike} />
           <ChatBubbleOvalLeftIcon onClick={handleClick} className='heroicons mr-4 hover:fill-blue-700' />
           <ShareIcon className='heroicons hover:fill-blue-500' />
+          </div>
+          
+          :<button><Link className='border border-black hover:bg-gray-200 rounded-md p-1 px-2' to='/login'>Login First</Link></button>
+          }
+          
         </div>
 
         {/* Details  */}
