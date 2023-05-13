@@ -18,10 +18,10 @@ const AddComment = ({ articleName,onArticleUpdated }) => {
         setComment('')
     }
     return (
-        <div>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Enter Your Name' />
-            <input value={comment} type="text" onChange={e => setComment(e.target.value)} placeholder='add comment' />
-            <button onClick={addComment} type='submit'>Submit</button>
+        <div className='flex'>
+            <input className=' border pl-2 rounded mr-2' type="text" value={name} onChange={e => setName(e.target.value)} placeholder='Enter Your Name' />
+            <input className=' border pl-2 rounded mr-2 ' value={comment} type="text" onChange={e => setComment(e.target.value)} placeholder='Add comment' />
+            <button className='border border-radius-md border-gray-600 rounded px-3 hover:bg-gray-300 ' onClick={addComment} type='submit'>Submit</button>
         </div>
     )
 }

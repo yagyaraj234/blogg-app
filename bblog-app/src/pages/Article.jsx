@@ -15,6 +15,16 @@ const Article = () => {
   const { articleId } = useParams();
   const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [] })
 
+  const [isShown, setIsShown] = useState(false);
+
+  const handleClick = event => {
+    // 👇️ toggle shown state
+    setIsShown(current => !current);
+
+    // 👇️ or simply set it to true
+    // setIsShown(true);
+  };
+
   useEffect(() => {
     const loadArticleInfo = async () => {
       const response = await axios.get(`/api/articles/${articleId}`)
@@ -48,11 +58,11 @@ const Article = () => {
       ))}
 
       {/* // interaction icons */}
-      <div className='flex flex-row justify-between  '>
+      <div className='flex flex-row justify-between   '>
         < div className='flex ' >
-          <HeartIcon className='heroicons mr-4 cursor-pointer' onClick={addLike} />
-          <ChatBubbleOvalLeftIcon className='heroicons mr-4 ' />
-          <ShareIcon className='heroicons' />
+          <HeartIcon className='heroicons mr-4 cursor-pointer hover:fill-red-700' onClick={addLike} />
+          <ChatBubbleOvalLeftIcon onClick={handleClick} className='heroicons mr-4 hover:fill-blue-700' />
+          <ShareIcon className='heroicons hover:fill-blue-500' />
         </div>
 
         {/* Details  */}
@@ -61,15 +71,19 @@ const Article = () => {
           <button className=' border border-black px-3 rounded-lg  text-sm  ml-5'  >{articleInfo.follow ? 'Following' : 'Follow'}</button>
         </div>
       </div>
-      <div className="flex flex-row">
+      <div className="flex flex-row ">
         <p className='mr-1'>{articleInfo.likes} like(s)</p>
 
         <p className='mr-1'></p>
         <p className='mr-1'>{articleInfo.comments.length} comment(s)</p>
 
       </div>
-      <AddComment articleName={articleId}
-        onArticleUpdated={updatedArticle => setArticleInfo(updatedArticle)} />
+
+      {isShown && (
+        <AddComment articleName={articleId}
+          onArticleUpdated={updatedArticle => setArticleInfo(updatedArticle)} />
+      )}
+
       <CommentsList comments={articleInfo.comments} />
     </div>
   )
