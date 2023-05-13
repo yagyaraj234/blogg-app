@@ -6,6 +6,8 @@ import {
   AboutPage,
   NotFound,
   SavedArticles,
+  LoginPage,
+  CreateAccount
 } from "./pages/index";
 import "./App.css";
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Route path="/articles/:articleId" element={<Article />} />
         <Route path="/saved-articles" element={<SavedArticles />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<CreateAccount />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </div>
