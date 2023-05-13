@@ -1,5 +1,6 @@
 
 import ArticleList from '../components/ArticleList'
+
 const ArticleListPage = ({articles}) => {
   return (
     <>

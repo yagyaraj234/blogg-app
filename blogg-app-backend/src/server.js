@@ -35,8 +35,7 @@ app.put("/api/articles/:name/likes", async (req, res) => {
   const article = await db.collection("articles").findOne({ name });
 
   if (article) {
-    article.likes += 1;
-    res.send(`The ${name} article now has ${article.likes} likes !!!`);
+    res.json(article)
   } else {
     res.send("That article doesn't exist");
   }
@@ -59,7 +58,7 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   const article = await db.collection("articles").findOne({ name });
 
   if (article) {
-    res.send(article.comments);
+    res.json(article);
   } else {
     res.send("That article doesn't exist");
   }
