@@ -9,40 +9,56 @@ import axios from 'axios'
 import AddComment from '../components/AddComment';
 
 import useUser from '../hooks/useUser';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 
 
 const Article = () => {
+
+  const liked ={
+    fill :"red",
+    display:"hidden"
+  }
+  const notLiked ={
+    background: "white"
+  }
+
   const { articleId } = useParams();
-  const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [] })
+  const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [],canLike:false })
+  const {canLike} =articleInfo;
 
   const [isShown, setIsShown] = useState(false);
 
-  const {user,isLoading}=useUser();
+  const { user, isLoading } = useUser();
 
   const handleClick = event => {
-    // 👇️ toggle shown state
     setIsShown(current => !current);
-
-    // 👇️ or simply set it to true
-    // setIsShown(true);
   };
 
   useEffect(() => {
     const loadArticleInfo = async () => {
-      const response = await axios.get(`/api/articles/${articleId}`)
+      const token = user && await user.getIdToken();
+      const headers = token ? { authtoken: token } : token;
+      const response = await axios.get(`/api/ articles/${articleId}`, {
+        headers
+      })
       const newArticleInfo = response.data;
       setArticleInfo(newArticleInfo);
     }
-    loadArticleInfo();
-  },)
+    if(isLoading){
+      loadArticleInfo();
+    } 
+      
+    
+  },[isLoading,user])
 
   // Adding likes 
 
   const addLike = async () => {
-    const response = await axios.put(`/api/articles/${articleId}/likes`);
+    const token = user && await user.getIdToken();
+    const headers = token ? { authtoken: token } : token;
+    const response = await axios.put(`/api/articles/${articleId}/likes`, null, { headers });
 
     const updatedArticle = response.data;
     setArticleInfo(updatedArticle);
@@ -66,15 +82,17 @@ const Article = () => {
       <div className='flex flex-row justify-between   '>
         < div className='flex ' >
           {user
-          ?
-          <div className='flex'><HeartIcon className='heroicons mr-4 cursor-pointer hover:fill-red-700' onClick={addLike} />
-          <ChatBubbleOvalLeftIcon onClick={handleClick} className='heroicons mr-4 hover:fill-blue-700' />
-          <ShareIcon className='heroicons hover:fill-blue-500' />
-          </div>
-          
-          :<button><Link className='border border-black hover:bg-gray-200 rounded-md p-1 px-2' to='/login'>Login First</Link></button>
+            ?
+            <div className='flex'><HeartIcon 
+            style={canLike ?liked :notLiked}
+            className={`heroicons mr-4 cursor-pointer hover:fill-red-700 ${canLike?'fill-white':'fill-red-700'}` }onClick={addLike} />
+              <ChatBubbleOvalLeftIcon onClick={handleClick} className='heroicons mr-4 hover:fill-blue-700' />
+              <ShareIcon className='heroicons hover:fill-blue-500' />
+            </div>
+
+            : <button><Link className='border border-black hover:bg-gray-200 rounded-md p-1 px-2' to='/login'>Login First</Link></button>
           }
-          
+
         </div>
 
         {/* Details  */}

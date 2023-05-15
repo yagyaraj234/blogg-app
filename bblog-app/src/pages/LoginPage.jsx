@@ -24,7 +24,7 @@ const LoginPage = () => {
     < div className=' m-auto flex flex-col pt-5 w-2/6 '>
 
     <h1 className='text-3xl text-center mb-5'>Login Your Account</h1>
-    {error && <p >{error}</p>}
+    {error && <p className='bg-red-400 text-gray-700' >{error}</p>}
     <label  className='text-lg'>Email</label>
     <input  className='my-1 py-1 border rounded outline-none border-2' type="text" placeholder='Email' value={email}
     onChange={e =>setEmail(e.target.value)}/>
