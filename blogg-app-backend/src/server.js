@@ -4,7 +4,10 @@ import { db, connectToDb } from "./db.js";
 
 import fs from "fs";
 import admin from "firebase-admin";
+
 const app = express();
+dotenv.config();
+const PORT = process.env.PORT || 5500;
 
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 
@@ -12,12 +15,9 @@ admin.initializeApp({
   credential: admin.credential.cert(credentials),
 });
 
-dotenv.config();
-
-const PORT = process.env.PORT || 5500;
-
 // Middlewares
 app.use(express.json());
+
 app.use(async (req, res, next) => {
   const { authtoken } = req.headers;
   if (authtoken) {
@@ -27,16 +27,8 @@ app.use(async (req, res, next) => {
       return res.sendStatus(400);
     }
   }
-  req.user =req.user || {};
+  req.user = req.user || {};
   next();
-});
-
-app.use((req, res, next) => {
-  if (req.user) {
-    next();
-  } else {
-    res.sendStatus(401);
-  }
 });
 
 // Loading Articles
@@ -54,11 +46,19 @@ app.get("/api/articles/:name", async (req, res) => {
   }
 });
 
+app.use((req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+});
+
 /// Likes
 
 app.put("/api/articles/:name/likes", async (req, res) => {
   const { name } = req.params;
-  const {uid}  =req.user;
+  const { uid } = req.user;
 
   const article = await db.collection("articles").findOne({ name });
 
@@ -71,17 +71,15 @@ app.put("/api/articles/:name/likes", async (req, res) => {
         { name },
         {
           $inc: { likes: 1 },
-          $push:{likeIds:uid}
+          $push: { likeIds: uid },
         }
       );
     }
-  
 
-  const updatedArticle = await db.collection("articles").findOne({ name });
-
+    const updatedArticle = await db.collection("articles").findOne({ name });
     res.json(updatedArticle);
   } else {
-    res.send("That article doesn't exist");
+    res.send("That article doesn\'t exist");
   }
 });
 
@@ -89,14 +87,13 @@ app.put("/api/articles/:name/likes", async (req, res) => {
 
 app.post("/api/articles/:name/comments", async (req, res) => {
   const { name } = req.params;
-
-  const {  text } = req.body;
-  const {email} =req.user;
+  const { text } = req.body;
+  const { email } = req.user;
 
   await db.collection("articles").updateOne(
     { name },
     {
-      $push: { comments: { postedBy:email, text } },
+      $push: { comments: { postedBy: email, text } },
     }
   );
 
@@ -105,14 +102,10 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   if (article) {
     res.json(article);
   } else {
-    res.send("That article doesn't exist");
+    res.send("That article doesn\'t exist");
   }
 });
 
-// Home Page
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
 
 connectToDb(() => {
   console.log("Db connected Succesfully");

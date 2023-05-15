@@ -11,11 +11,11 @@ const AddComment = ({ articleName, onArticleUpdated }) => {
 
     const addComment = async () => {
         const token = user && await user.getIdToken();
-        const headers = token ? { authtoken: token } : token;
+        const headers = token ? { authtoken: token } : {};
         const response = await axios.post(`/api/articles/${articleName}/comments`, {
             postedBy: name,
             text: comment,
-        }, { headers });
+        }, { headers, });
         const updatedArticle = response.data;
         onArticleUpdated(updatedArticle)
         setName('')

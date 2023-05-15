@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react';
 import CommentsList from '../components/CommentsList';
 import axios from 'axios'
 import AddComment from '../components/AddComment';
-
 import useUser from '../hooks/useUser';
 import { Link } from 'react-router-dom'
 
@@ -16,17 +15,9 @@ import { Link } from 'react-router-dom'
 
 const Article = () => {
 
-  const liked ={
-    fill :"red",
-    display:"hidden"
-  }
-  const notLiked ={
-    background: "white"
-  }
-
   const { articleId } = useParams();
-  const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [],canLike:false })
-  const {canLike} =articleInfo;
+  const [articleInfo, setArticleInfo] = useState({ likes: 0, comments: [], canLike: false })
+  const { canLike } = articleInfo;
 
   const [isShown, setIsShown] = useState(false);
 
@@ -39,33 +30,31 @@ const Article = () => {
   useEffect(() => {
     const loadArticleInfo = async () => {
       const token = user && await user.getIdToken();
-      const headers = token ? { authtoken: token } : token;
+      const headers = token ? { authtoken: token } : {};
       const response = await axios.get(`/api/ articles/${articleId}`, {
         headers
       })
       const newArticleInfo = response.data;
       setArticleInfo(newArticleInfo);
     }
-    if(isLoading){
+    if (isLoading) {
       loadArticleInfo();
-    } 
-      
-    
-  },[isLoading,user])
+    }
 
+
+  }, [isLoading, user])
+
+  const article = articles.find(article => article.name === articleId);
   // Adding likes 
 
   const addLike = async () => {
     const token = user && await user.getIdToken();
-    const headers = token ? { authtoken: token } : token;
+    const headers = token ? { authtoken: token } : {};
     const response = await axios.put(`/api/articles/${articleId}/likes`, null, { headers });
-
     const updatedArticle = response.data;
     setArticleInfo(updatedArticle);
   }
 
-
-  const article = articles.find(article => article.name === articleId);
   if (!article) {
     return <NotFound />
   }
@@ -83,9 +72,8 @@ const Article = () => {
         < div className='flex ' >
           {user
             ?
-            <div className='flex'><HeartIcon 
-            style={canLike ?liked :notLiked}
-            className={`heroicons mr-4 cursor-pointer hover:fill-red-700 ${canLike?'fill-white':'fill-red-700'}` }onClick={addLike} />
+            <div className='flex'><HeartIcon
+              className={`heroicons mr-4 cursor-pointer hover:fill-red-700 ${canLike ? 'fill-red-700' : 'fill-white-700'}`} onClick={addLike} />
               <ChatBubbleOvalLeftIcon onClick={handleClick} className='heroicons mr-4 hover:fill-blue-700' />
               <ShareIcon className='heroicons hover:fill-blue-500' />
             </div>
